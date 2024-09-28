@@ -1,0 +1,70 @@
+#include <iostream>
+#include <cstring>
+using namespace std;
+
+void showMatrix(int** matrix, int rows, int cols) {
+    for (int i = 0; i <= rows; ++i) {
+        for (int j = 0; j <= cols; ++j) {
+            cout << matrix[i][j] << " ";
+        }
+        cout << endl;
+    }
+}
+
+string findLCS(char* strA, char* strB, int lenA, int lenB) {
+    int** lcsMatrix = new int*[lenA + 1];
+    for (int i = 0; i <= lenA; ++i) {
+        lcsMatrix[i] = new int[lenB + 1];
+    }
+
+    int maxLength = 0;
+    int endIdx = 0;
+
+    for (int i = 0; i <= lenA; i++) {
+        for (int j = 0; j <= lenB; j++) {
+            if (i == 0 || j == 0)
+                lcsMatrix[i][j] = 0;
+            else if (strA[i - 1] == strB[j - 1]) {
+                lcsMatrix[i][j] = lcsMatrix[i - 1][j - 1] + 1;
+                if (lcsMatrix[i][j] > maxLength) {
+                    maxLength = lcsMatrix[i][j];
+                    endIdx = i - 1;
+                }
+            } else {
+                lcsMatrix[i][j] = 0;
+            }
+        }
+    }
+
+    cout << "Common Suffix Length Matrix:" << endl;
+    showMatrix(lcsMatrix, lenA, lenB);
+
+    string commonSubstr(strA + endIdx - maxLength + 1, maxLength);
+
+    for (int i = 0; i <= lenA; ++i) {
+        delete[] lcsMatrix[i];
+    }
+    delete[] lcsMatrix;
+
+    return commonSubstr;
+}
+
+int main() {
+    const int MAX_INPUT_SIZE = 1000;
+    char strA[MAX_INPUT_SIZE], strB[MAX_INPUT_SIZE];
+
+    cout << "Input the first string: ";
+    cin.getline(strA, MAX_INPUT_SIZE);
+
+    cout << "Input the second string: ";
+    cin.getline(strB, MAX_INPUT_SIZE);
+
+    int lenA = strlen(strA);
+    int lenB = strlen(strB);
+
+    string longestCommonSubstring = findLCS(strA, strB, lenA, lenB);
+
+    cout << "Longest Common Substring: " << longestCommonSubstring << endl;
+
+    return 0;
+}
